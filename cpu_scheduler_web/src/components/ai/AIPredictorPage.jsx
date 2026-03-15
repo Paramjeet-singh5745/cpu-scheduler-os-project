@@ -13,8 +13,8 @@ export default function AIPredictor() {
 
     const newProcess = {
       id: `P${processes.length + 1}`,
-      arrival: 0,
-      burst: 1
+      arrival: "",
+      burst: ""
     };
 
     setProcesses([...processes, newProcess]);
@@ -24,14 +24,22 @@ export default function AIPredictor() {
   const updateProcess = (index, field, value) => {
 
     const updated = [...processes];
-    updated[index][field] = Number(value);
+
+    updated[index][field] = value === "" ? "" : Number(value);
+
     setProcesses(updated);
 
   };
 
   const runAI = () => {
 
-    const output = aiPredictor(processes);
+    const cleanedProcesses = processes.map(p => ({
+      ...p,
+      arrival: Number(p.arrival) || 0,
+      burst: Number(p.burst) || 0
+    }));
+
+    const output = aiPredictor(cleanedProcesses);
     setResult(output);
 
   };
@@ -92,7 +100,8 @@ export default function AIPredictor() {
 
                     <input
                       type="number"
-                      value={p.arrival}
+                      min="0"
+                      value={p.arrival ?? ""}
                       onChange={(e) =>
                         updateProcess(i, "arrival", e.target.value)
                       }
@@ -105,7 +114,8 @@ export default function AIPredictor() {
 
                     <input
                       type="number"
-                      value={p.burst}
+                      min="1"
+                      value={p.burst ?? ""}
                       onChange={(e) =>
                         updateProcess(i, "burst", e.target.value)
                       }

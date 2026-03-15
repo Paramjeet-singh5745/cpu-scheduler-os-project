@@ -14,9 +14,9 @@ export default function Priority() {
 
     const newProcess = {
       id: `P${processes.length + 1}`,
-      arrival: 0,
-      burst: 1,
-      priority: 1
+      arrival: "",
+      burst: "",
+      priority: ""
     };
 
     setProcesses([...processes, newProcess]);
@@ -25,14 +25,24 @@ export default function Priority() {
   const updateProcess = (index, field, value) => {
 
     const updated = [...processes];
-    updated[index][field] = Number(value);
+
+    updated[index][field] = value === "" ? "" : Number(value);
+
     setProcesses(updated);
 
   };
 
   const runPriority = () => {
 
-    const output = priorityScheduling(processes);
+    const cleanedProcesses = processes.map(p => ({
+      ...p,
+      arrival: Number(p.arrival) || 0,
+      burst: Number(p.burst) || 0,
+      priority: Number(p.priority) || 0
+    }));
+
+    const output = priorityScheduling(cleanedProcesses);
+
     setResult(output);
 
   };
@@ -97,7 +107,8 @@ export default function Priority() {
 
                     <input
                       type="number"
-                      value={p.arrival}
+                      min="0"
+                      value={p.arrival ?? ""}
                       onChange={(e) =>
                         updateProcess(i, "arrival", e.target.value)
                       }
@@ -110,7 +121,8 @@ export default function Priority() {
 
                     <input
                       type="number"
-                      value={p.burst}
+                      min="1"
+                      value={p.burst ?? ""}
                       onChange={(e) =>
                         updateProcess(i, "burst", e.target.value)
                       }
@@ -123,7 +135,8 @@ export default function Priority() {
 
                     <input
                       type="number"
-                      value={p.priority}
+                      min="0"
+                      value={p.priority ?? ""}
                       onChange={(e) =>
                         updateProcess(i, "priority", e.target.value)
                       }

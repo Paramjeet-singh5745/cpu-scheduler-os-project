@@ -11,29 +11,33 @@ export default function FCFS() {
   const [result, setResult] = useState(null);
 
   const addProcess = () => {
-
     const newProcess = {
       id: `P${processes.length + 1}`,
-      arrival: 0,
-      burst: 1
+      arrival: "",
+      burst: ""
     };
 
     setProcesses([...processes, newProcess]);
   };
 
   const updateProcess = (index, field, value) => {
-
     const updated = [...processes];
-    updated[index][field] = Number(value);
-    setProcesses(updated);
 
+    updated[index][field] = value === "" ? "" : Number(value);
+
+    setProcesses(updated);
   };
 
   const runFCFS = () => {
 
-    const output = fcfsScheduling(processes);
-    setResult(output);
+    const cleanedProcesses = processes.map(p => ({
+      ...p,
+      arrival: Number(p.arrival) || 0,
+      burst: Number(p.burst) || 0
+    }));
 
+    const output = fcfsScheduling(cleanedProcesses);
+    setResult(output);
   };
 
   return (
@@ -95,7 +99,8 @@ export default function FCFS() {
 
                     <input
                       type="number"
-                      value={p.arrival}
+                      min="0"
+                      value={p.arrival ?? ""}
                       onChange={(e) =>
                         updateProcess(i, "arrival", e.target.value)
                       }
@@ -108,7 +113,8 @@ export default function FCFS() {
 
                     <input
                       type="number"
-                      value={p.burst}
+                      min="1"
+                      value={p.burst ?? ""}
                       onChange={(e) =>
                         updateProcess(i, "burst", e.target.value)
                       }

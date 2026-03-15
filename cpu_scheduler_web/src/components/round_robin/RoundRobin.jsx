@@ -17,8 +17,8 @@ export default function RoundRobin() {
 
     const newProcess = {
       id: `P${processes.length + 1}`,
-      arrival: 0,
-      burst: 1
+      arrival: "",
+      burst: ""
     };
 
     setProcesses([...processes, newProcess]);
@@ -27,14 +27,23 @@ export default function RoundRobin() {
   const updateProcess = (index, field, value) => {
 
     const updated = [...processes];
-    updated[index][field] = Number(value);
+
+    updated[index][field] = value === "" ? "" : Number(value);
+
     setProcesses(updated);
 
   };
 
   const runRR = () => {
 
-    const output = roundRobinScheduling(processes, quantum);
+    const cleanedProcesses = processes.map(p => ({
+      ...p,
+      arrival: Number(p.arrival) || 0,
+      burst: Number(p.burst) || 0
+    }));
+
+    const output = roundRobinScheduling(cleanedProcesses, Number(quantum) || 1);
+
     setResult(output);
 
   };
@@ -98,7 +107,8 @@ export default function RoundRobin() {
 
                     <input
                       type="number"
-                      value={p.arrival}
+                      min="0"
+                      value={p.arrival ?? ""}
                       onChange={(e) =>
                         updateProcess(i, "arrival", e.target.value)
                       }
@@ -111,7 +121,8 @@ export default function RoundRobin() {
 
                     <input
                       type="number"
-                      value={p.burst}
+                      min="1"
+                      value={p.burst ?? ""}
                       onChange={(e) =>
                         updateProcess(i, "burst", e.target.value)
                       }
@@ -141,8 +152,9 @@ export default function RoundRobin() {
 
           <input
             type="number"
+            min="1"
             value={quantum}
-            onChange={(e) => setQuantum(Number(e.target.value))}
+            onChange={(e) => setQuantum(e.target.value === "" ? "" : Number(e.target.value))}
             className="border rounded p-2 w-24"
           />
 
@@ -287,6 +299,5 @@ export default function RoundRobin() {
       )}
 
     </div>
-
   );
 }
