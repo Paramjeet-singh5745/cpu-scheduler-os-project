@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { roundRobinScheduling } from "./RoundRobinAlgorithm";
+import { roundRobinScheduling } from "./roundRobinAlgorithm";
 import GanttChart from "../GanttChart";
 import ReadyQueueGantt from "./ReadyQueueGantt";
 
